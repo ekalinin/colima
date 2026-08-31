@@ -670,14 +670,14 @@ From v0.5.6, start Colima with `--cgroups-v2` flag as a workaround.
 
 ### Docker Compose logs showing no output
 
-`docker compose ps` selects containers by the `com.docker.compose.project` label only,
-while `docker compose logs` additionally restricts the selection to the services of the
-project loaded from the compose file in the current directory.
+`docker compose ps` includes orphaned containers by default (`--orphans` defaults to `true`),
+while `docker compose logs` always restricts the output to the services of the project loaded
+from the compose file in the current directory, and has no equivalent flag.
 
-A running container whose `com.docker.compose.service` is not part of that project - gated
-behind `profiles:`, renamed or removed from the compose file, or started from a different
-compose file - is therefore listed by `ps` but produces no log output, and the command exits
-`0` without any warning.
+A running container whose `com.docker.compose.service` is not among those services - gated
+behind `profiles:`, declared with `attach: false`, renamed or removed from the compose file,
+or started from a different compose file - is therefore listed by `ps` but produces no log
+output, and the command exits `0` without any warning.
 
 Passing `-p/--project-name` makes Compose skip loading the compose file altogether, so no
 service filter is applied. That is why `docker compose -p <name> logs` works while a bare
